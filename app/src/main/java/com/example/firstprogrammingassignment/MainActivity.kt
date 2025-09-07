@@ -12,9 +12,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.firstprogrammingassignment.db.helper.DatabaseHelper
 import com.example.firstprogrammingassignment.ui.theme.FirstProgrammingAssignmentTheme
 
 class MainActivity : ComponentActivity() {
@@ -36,7 +39,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-    var friendName = ""
+    val friendName = remember { mutableStateOf("") }
     Column(modifier = modifier.padding(100.dp)) {
         Text(
             text = "Hello $name!",
@@ -45,13 +48,15 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         Text("Enter the name of a new friend you made today", modifier = Modifier.padding(top = 40.dp))
 
         TextField(
-            value = friendName,
-            onValueChange = {friendName = it},
+            value = friendName.value,
+            onValueChange = {friendName.value = it},
             placeholder = { Text("New Friend's Name") },
             modifier = Modifier.padding(top = 40.dp, bottom = 20.dp)
         )
 
-        Button(onClick = {}) {
+        Button(onClick = {
+            DatabaseHelper.addFriend(friendName.value)
+        }) {
             Text("Submit")
         }
     }
