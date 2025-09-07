@@ -40,6 +40,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     val friendName = remember { mutableStateOf("") }
+    val statusMessage = remember { mutableStateOf("") }
     Column(modifier = modifier.padding(100.dp)) {
         Text(
             text = "Hello $name!",
@@ -55,9 +56,14 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         )
 
         Button(onClick = {
-            DatabaseHelper.addFriend(friendName.value)
+            DatabaseHelper.addFriend(friendName.value) { success ->
+                statusMessage.value = if (success) "Friend added!" else "Failed to add friend"
+            }
         }) {
             Text("Submit")
+        }
+        if (statusMessage.value.isNotEmpty()) {
+            Text(statusMessage.value, modifier = Modifier.padding(top = 16.dp))
         }
     }
 

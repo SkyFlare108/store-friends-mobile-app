@@ -13,7 +13,7 @@ object DatabaseHelper {
 
     private const val JDBC_URL = "jdbc:mysql://$HOST:3306/$DATABASE_NAME?useSSL=true&verifyServerCertificate=false"
 
-    fun addFriend(name: String) {
+    fun addFriend(name: String, onResult: (Boolean) -> Unit) {
         Thread {
             try {
                 Class.forName("com.mysql.jdbc.Driver")
@@ -23,10 +23,12 @@ object DatabaseHelper {
                         stmt.executeUpdate(sql)
                     }
                 }
-                // Log success and use to send notification to UI
+                onResult(true)
             } catch (e: Exception) {
                 Log.e("DatabaseHelper", "Error inserting data", e)
+                onResult(false)
             }
         }.start()
     }
+
 }
